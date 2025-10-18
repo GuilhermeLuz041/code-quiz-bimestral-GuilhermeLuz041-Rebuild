@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  questionnaire: one
+  question: one
+  selected_option: one
+  is_correct: false
+  answered_at: 2025-10-18 18:45:19
+  question_snapshot: MyText
+  deleted_at: 2025-10-18 18:45:19
+
+two:
+  user: two
+  questionnaire: two
+  question: two
+  selected_option: two
+  is_correct: false
+  answered_at: 2025-10-18 18:45:19
+  question_snapshot: MyText
+  deleted_at: 2025-10-18 18:45:19
