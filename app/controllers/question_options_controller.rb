@@ -1,4 +1,6 @@
 class QuestionOptionsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_question
   before_action :set_question_option, only: %i[ show edit update destroy ]
 
   # GET /question_options or /question_options.json
@@ -12,49 +14,42 @@ class QuestionOptionsController < ApplicationController
 
   # GET /question_options/new
   def new
-    @question_option = QuestionOption.new
+    @question_option = @question.question_options.build
+    authorize @question_option
   end
 
   # GET /question_options/1/edit
   def edit
+    authorize @question_option
   end
 
   # POST /question_options or /question_options.json
   def create
-    @question_option = QuestionOption.new(question_option_params)
+    @question_option = @question.question_options.build(question_option_params)
+    authorize @question_option
 
-    respond_to do |format|
-      if @question_option.save
-        format.html { redirect_to @question_option, notice: "Question option was successfully created." }
-        format.json { render :show, status: :created, location: @question_option }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @question_option.errors, status: :unprocessable_entity }
-      end
+    if @question_option.save
+      redirect_to @question, notice: "Opção criada com sucesso."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /question_options/1 or /question_options/1.json
   def update
-    respond_to do |format|
-      if @question_option.update(question_option_params)
-        format.html { redirect_to @question_option, notice: "Question option was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @question_option }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @question_option.errors, status: :unprocessable_entity }
-      end
+    authorize @question_option
+    if @question_option.update(question_option_params)
+      redirect_to @question, notice: "Opção atualizada com sucesso."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
   # DELETE /question_options/1 or /question_options/1.json
   def destroy
+    authorize @question_option
     @question_option.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to question_options_path, notice: "Question option was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to @question, notice: "Opção destruída com sucesso."
   end
 
   private
@@ -65,6 +60,6 @@ class QuestionOptionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def question_option_params
-      params.expect(question_option: [ :question_id, :title, :is_correct, :deleted_at ])
+      params.expect(question_option: [:title, :is_correct])
     end
 end

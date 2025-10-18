@@ -1,70 +1,57 @@
 class QuestionnairesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_questionnaire, only: %i[ show edit update destroy ]
 
-  # GET /questionnaires or /questionnaires.json
   def index
-    @questionnaires = Questionnaire.all
+    @questionnaires = policy_scope(Questionnaire)
   end
 
-  # GET /questionnaires/1 or /questionnaires/1.json
   def show
+    authorize @questionnaire
   end
 
-  # GET /questionnaires/new
   def new
     @questionnaire = Questionnaire.new
+    authorize @questionnaire
   end
 
-  # GET /questionnaires/1/edit
   def edit
+    authorize @questionnaire
   end
 
-  # POST /questionnaires or /questionnaires.json
   def create
-    @questionnaire = Questionnaire.new(questionnaire_params)
+    @questionnaire = current_user.questionnaires.build(questionnaire_params)
+    authorize @questionnaire
 
-    respond_to do |format|
-      if @questionnaire.save
-        format.html { redirect_to @questionnaire, notice: "Questionnaire was successfully created." }
-        format.json { render :show, status: :created, location: @questionnaire }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @questionnaire.errors, status: :unprocessable_entity }
-      end
+    if @questionnaire.save
+      redirect_to @questionnaire, notice: "Questionário criado com sucesso."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /questionnaires/1 or /questionnaires/1.json
   def update
-    respond_to do |format|
-      if @questionnaire.update(questionnaire_params)
-        format.html { redirect_to @questionnaire, notice: "Questionnaire was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @questionnaire }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @questionnaire.errors, status: :unprocessable_entity }
-      end
+    authorize @questionnaire
+
+    if @questionnaire.update(questionnaire_params)
+      redirect_to @questionnaire, notice: "Questionário atualizado com sucesso."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /questionnaires/1 or /questionnaires/1.json
   def destroy
+    authorize @questionnaire
     @questionnaire.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to questionnaires_path, notice: "Questionnaire was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to questionnaires_path, notice: "Questionário destruído com sucesso."
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_questionnaire
-      @questionnaire = Questionnaire.find(params.expect(:id))
+      @questionnaire = Questionnaire.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def questionnaire_params
-      params.expect(questionnaire: [ :code, :title, :description, :duration_minutes, :deleted_at, :user_id ])
+      params.require(:questionnaire).permit(:code, :title, :description, :duration_minutes)
     end
 end

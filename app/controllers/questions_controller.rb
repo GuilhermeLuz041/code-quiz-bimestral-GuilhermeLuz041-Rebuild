@@ -1,70 +1,77 @@
 class QuestionsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_questionnaire
   before_action :set_question, only: %i[ show edit update destroy ]
 
   # GET /questions or /questions.json
   def index
-    @questions = Question.all
+    @questions = policy_scope(@questionnaire.questions)
   end
 
   # GET /questions/1 or /questions/1.json
   def show
+    authorize @question
   end
 
   # GET /questions/new
   def new
-    @question = Question.new
+    @question = @questionnaire.questions.build
+    4.times { @question.question_options.build } 
+    authorize @question
   end
 
   # GET /questions/1/edit
   def edit
+    authorize @question
   end
 
   # POST /questions or /questions.json
   def create
-    @question = Question.new(question_params)
+    @question = @questionnaire.questions.build(question_params)
+    authorize @question
 
     respond_to do |format|
       if @question.save
-        format.html { redirect_to @question, notice: "Question was successfully created." }
-        format.json { render :show, status: :created, location: @question }
+        redirect_to @questionnaire, notice: "Pergunta criada com sucesso."
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @question.errors, status: :unprocessable_entity }
+        render :new, status: :unprocessable_entity
       end
     end
   end
 
   # PATCH/PUT /questions/1 or /questions/1.json
   def update
-    respond_to do |format|
-      if @question.update(question_params)
-        format.html { redirect_to @question, notice: "Question was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @question }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @question.errors, status: :unprocessable_entity }
-      end
+    authorize @question
+    if @question.update(question_params)
+      redirect_to @questionnaire, notice: "Pergunta atualizada com sucesso."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
   # DELETE /questions/1 or /questions/1.json
   def destroy
+    authorize @question
     @question.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to questions_path, notice: "Question was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to @questionnaire, notice: "Pergunta destruída com sucesso."
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
+
+    def set_questionnaire
+      @questionnaire = Questionnaire.find(params[:questionnaire_id])
+    end
+
     def set_question
       @question = Question.find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.
     def question_params
-      params.expect(question: [ :questionnaire_id, :enunciation, :deleted_at ])
+      params.require(:question).permit(
+        :enunciation,
+        question_options_attributes: [:id, :title, :is_correct, :_destroy]
+      )
     end
 end
