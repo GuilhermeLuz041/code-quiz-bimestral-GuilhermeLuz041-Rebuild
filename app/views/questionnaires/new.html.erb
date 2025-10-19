@@ -1,11 +1,4 @@
-<% content_for :title, "New questionnaire" %>
-
-<h1>New questionnaire</h1>
-
-<%= render "form", questionnaire: @questionnaire %>
-
-<br>
-
-<div>
-  <%= link_to "Back to questionnaires", questionnaires_path %>
+<div class="w-full max-w-2xl mx-auto bg-[#1F2937] shadow-lg rounded-lg p-8">
+  <h1 class="text-3xl font-bold mb-6 text-white">Novo Questionário</h1>
+  <%= render "form", questionnaire: @questionnaire %>
 </div>

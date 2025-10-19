@@ -1,8 +1,7 @@
-<%= form_with(model: question_option) do |form| %>
+<%= form_with(model: [@question, question_option], class: "space-y-4") do |form| %>
   <% if question_option.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(question_option.errors.count, "error") %> prohibited this question_option from being saved:</h2>
-
+    <div class="text-red-600">
+      <h2><%= pluralize(question_option.errors.count, "error") %> impediu esta opção de ser salva:</h2>
       <ul>
         <% question_option.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -12,26 +11,16 @@
   <% end %>
 
   <div>
-    <%= form.label :question_id, style: "display: block" %>
-    <%= form.text_field :question_id %>
+    <%= form.label :title, "Texto da Opção", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :title, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
   </div>
 
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
+  <div class="flex items-center">
+    <%= form.check_box :is_correct, class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" %>
+    <%= form.label :is_correct, "Esta é a resposta correta?", class: "ml-2 block text-sm text-gray-900" %>
   </div>
 
-  <div>
-    <%= form.label :is_correct, style: "display: block" %>
-    <%= form.checkbox :is_correct %>
-  </div>
-
-  <div>
-    <%= form.label :deleted_at, style: "display: block" %>
-    <%= form.datetime_field :deleted_at %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="actions">
+    <%= form.submit "Salvar Opção", class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 cursor-pointer" %>
   </div>
 <% end %>

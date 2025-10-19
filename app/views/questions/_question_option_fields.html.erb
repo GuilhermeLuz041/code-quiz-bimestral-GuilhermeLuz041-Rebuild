@@ -1,0 +1,14 @@
+<div class="nested-fields bg-[#111827] p-4 border border-slate-700 rounded-lg mb-4" data-new-record="<%= form.object.new_record? %>">
+  <div>
+    <%= form.label :title, "Texto da Opção", class: "block text-xs font-medium text-slate-400" %>
+    <%= form.text_field :title, class: "mt-1 block w-full bg-[#1F2937] border-slate-600 rounded-md shadow-sm focus:border-[#4f46e5] focus:ring focus:ring-[#4f46e5] focus:ring-opacity-50 text-white" %>
+  </div>
+  <div class="mt-2 flex items-center justify-between">
+    <div class="flex items-center">
+      <%= form.radio_button :is_correct, true, { class: 'h-4 w-4 rounded border-slate-600 bg-slate-700 text-[#4f46e5] focus:ring-[#4338ca]' } %>
+      <%= form.label :is_correct, "Resposta Correta", class: "ml-2 block text-sm text-slate-300" %>
+    </div>
+    <%= link_to "Remover", '#', data: { action: "click->nested-form#remove" }, class: "text-red-500 hover:underline text-sm" %>
+  </div>
+  <%= form.hidden_field :_destroy %>
+</div>

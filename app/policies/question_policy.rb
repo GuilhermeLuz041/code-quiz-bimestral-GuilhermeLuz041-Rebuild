@@ -14,7 +14,7 @@ class QuestionPolicy < ApplicationPolicy
   end
 
   def new?
-    create?
+    user.admin? || user.moderator?
   end
 
   def update?

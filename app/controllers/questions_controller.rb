@@ -16,7 +16,7 @@ class QuestionsController < ApplicationController
   # GET /questions/new
   def new
     @question = @questionnaire.questions.build
-    4.times { @question.question_options.build } 
+    2.times { @question.question_options.build } 
     authorize @question
   end
 
@@ -30,12 +30,10 @@ class QuestionsController < ApplicationController
     @question = @questionnaire.questions.build(question_params)
     authorize @question
 
-    respond_to do |format|
-      if @question.save
-        redirect_to @questionnaire, notice: "Pergunta criada com sucesso."
-      else
-        render :new, status: :unprocessable_entity
-      end
+    if @question.save
+      redirect_to @questionnaire, notice: "Pergunta criada com sucesso."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 

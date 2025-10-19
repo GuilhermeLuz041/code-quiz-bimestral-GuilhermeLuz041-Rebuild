@@ -1,9 +1,8 @@
-<%= form_with(model: question) do |form| %>
+<%= form_with(model: [@questionnaire, question], data: { controller: "nested-form" }) do |form| %>
   <% if question.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(question.errors.count, "error") %> prohibited this question from being saved:</h2>
-
-      <ul>
+    <div class="text-red-400 p-4 border border-red-800 bg-red-900/20 rounded-lg">
+      <h2 class="font-bold"><%= pluralize(question.errors.count, "erro") %> impediu esta pergunta de ser salva:</h2>
+      <ul class="list-disc list-inside mt-2">
         <% question.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -12,21 +11,23 @@
   <% end %>
 
   <div>
-    <%= form.label :questionnaire_id, style: "display: block" %>
-    <%= form.text_field :questionnaire_id %>
+    <%= form.label :enunciation, "Texto da Pergunta (Enunciado)", class: "block text-sm font-medium text-slate-300" %>
+    <%= form.text_area :enunciation, rows: 4, class: "mt-1 block w-full bg-[#1F2937] border-slate-600 rounded-md shadow-sm focus:border-[#4f46e5] focus:ring focus:ring-[#4f46e5] focus:ring-opacity-50 text-white" %>
   </div>
 
-  <div>
-    <%= form.label :enunciation, style: "display: block" %>
-    <%= form.text_field :enunciation %>
+  <hr class="border-slate-700">
+  <h3 class="text-lg font-medium text-white">Opções de Resposta</h3>
+
+  <%= form.fields_for :question_options do |options_form| %>
+    <%= render 'question_option_fields', form: options_form %>
+  <% end %>
+
+  <div data-nested-form-target="links">
+    <%= link_to_add_association "Adicionar Opção", form, :question_options, data: { action: "click->nested-form#add" }, class: "text-[#a5b4fc] hover:text-white" %>
   </div>
 
-  <div>
-    <%= form.label :deleted_at, style: "display: block" %>
-    <%= form.datetime_field :deleted_at %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="flex items-center space-x-4 pt-4">
+    <%= form.submit "Salvar Pergunta e Opções", class: "bg-[#4f46e5] hover:bg-[#4338ca] text-white font-bold py-2 px-4 rounded-lg cursor-pointer transition-colors" %>
+    <%= link_to "Cancelar", questionnaire_path(@questionnaire), class: "text-slate-400 hover:text-white" %>
   </div>
 <% end %>

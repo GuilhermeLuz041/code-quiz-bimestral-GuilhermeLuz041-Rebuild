@@ -1,12 +1,4 @@
-<% content_for :title, "Editing question" %>
-
-<h1>Editing question</h1>
-
-<%= render "form", question: @question %>
-
-<br>
-
-<div>
-  <%= link_to "Show this question", @question %> |
-  <%= link_to "Back to questions", questions_path %>
+<div class="w-full max-w-3xl mx-auto bg-[#1F2937] shadow-lg rounded-lg p-8">
+  <h1 class="text-3xl font-bold mb-6 text-white">Editando Pergunta</h1>
+  <%= render "form", question: @question %>
 </div>

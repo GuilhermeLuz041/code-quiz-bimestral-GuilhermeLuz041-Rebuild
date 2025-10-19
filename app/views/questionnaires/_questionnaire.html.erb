@@ -1,32 +1,26 @@
 <div id="<%= dom_id questionnaire %>">
   <p>
-    <strong>Code:</strong>
+    <strong>Código:</strong>
     <%= questionnaire.code %>
   </p>
 
   <p>
-    <strong>Title:</strong>
+    <strong>Título:</strong>
     <%= questionnaire.title %>
   </p>
 
   <p>
-    <strong>Description:</strong>
+    <strong>Descrição:</strong>
     <%= questionnaire.description %>
   </p>
 
   <p>
-    <strong>Duration minutes:</strong>
+    <strong>Duração (minutos):</strong>
     <%= questionnaire.duration_minutes %>
   </p>
 
   <p>
-    <strong>Deleted at:</strong>
-    <%= questionnaire.deleted_at %>
+    <strong>Criado por:</strong>
+    <%= questionnaire.user.email %>
   </p>
-
-  <p>
-    <strong>User:</strong>
-    <%= questionnaire.user_id %>
-  </p>
-
 </div>

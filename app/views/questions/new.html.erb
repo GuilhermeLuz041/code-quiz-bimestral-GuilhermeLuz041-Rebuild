@@ -1,11 +1,4 @@
-<% content_for :title, "New question" %>
-
-<h1>New question</h1>
-
-<%= render "form", question: @question %>
-
-<br>
-
-<div>
-  <%= link_to "Back to questions", questions_path %>
+<div class="w-full max-w-3xl mx-auto bg-[#1F2937] shadow-lg rounded-lg p-8">
+  <h1 class="text-3xl font-bold mb-6 text-white">Adicionar Nova Pergunta</h1>
+  <%= render "form", question: @question %>
 </div>
