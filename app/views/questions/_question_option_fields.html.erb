@@ -5,8 +5,20 @@
   </div>
   <div class="mt-2 flex items-center justify-between">
     <div class="flex items-center">
-      <%= form.radio_button :is_correct, true, { class: 'h-4 w-4 rounded border-slate-600 bg-slate-700 text-[#4f46e5] focus:ring-[#4338ca]' } %>
-      <%= form.label :is_correct, "Resposta Correta", class: "ml-2 block text-sm text-slate-300" %>
+
+      <%= form.hidden_field :is_correct, value: '0' %>
+
+      <%= form.check_box :is_correct, {
+            class: 'h-4 w-4 rounded border-slate-600 bg-slate-700 text-[#4f46e5] focus:ring-[#4338ca]',
+            data: {
+              single_choice_target: "checkbox",
+              action: "click->single-choice#toggle"
+            }
+          },
+          '1',  
+          nil   
+      %>
+      <%= form.label :is_correct, "Esta é a resposta correta?", class: "ml-2 block text-sm text-slate-300" %>
     </div>
     <%= link_to "Remover", '#', data: { action: "click->nested-form#remove" }, class: "text-red-500 hover:underline text-sm" %>
   </div>

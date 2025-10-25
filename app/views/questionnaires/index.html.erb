@@ -9,7 +9,7 @@
 
   <div id="questionnaires" class="space-y-4">
     <% @questionnaires.each do |questionnaire| %>
-      <div class="bg-[#1F2937] shadow-lg rounded-lg p-4 flex justify-between items-center transition-transform hover:scale-[1.02]">
+      <div class="bg-[#1F2937] shadow-lg rounded-lg p-4 flex justify-between items-center transition-transform hover:scale-[1.01]">
         <div>
           <h2 class="font-bold text-lg text-white hover:text-[#a5b4fc]">
             <%= link_to questionnaire.title, questionnaire %>
@@ -17,16 +17,21 @@
           <p class="text-sm text-slate-400">Criado por: <%= questionnaire.user.email %></p>
         </div>
         <div class="flex space-x-2">
-          <%# Botão Gerenciar - Azul suave para destacar ação principal %>
-          <%= link_to "Gerenciar", questionnaire, class: "bg-[#6366f1] hover:bg-[#4f46e5] text-white font-bold py-2 px-3 rounded text-sm transition-colors" %>
           
-          <% if policy(questionnaire).edit? %>
-            <%= link_to "Editar", edit_questionnaire_path(questionnaire), class: "bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-3 rounded text-sm transition-colors" %>
+
+
+          <% if questionnaire.questions.any? %>
+            <%= link_to "Iniciar Quiz", 
+                        questionnaire_quiz_question_path(questionnaire, questionnaire.questions.order(:created_at).first), 
+                        class: "bg-[#4f46e5] hover:bg-[#4338ca] text-white font-bold py-2 px-3 rounded text-sm transition-colors" %>
           <% end %>
-          
-          <% if policy(questionnaire).destroy? %>
+
+          <% if policy(questionnaire).edit? %> 
+            <%= link_to "Gerenciar", questionnaire, class: "bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-3 rounded text-sm transition-colors" %>
+            <%= link_to "Editar", edit_questionnaire_path(questionnaire), class: "bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-3 rounded text-sm transition-colors" %>
             <%= button_to "Destruir", questionnaire, method: :delete, class: "bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-3 rounded text-sm transition-colors", form: { data: { turbo_confirm: 'Você tem certeza?' } } %>
           <% end %>
+          
         </div>
       </div>
     <% end %>
