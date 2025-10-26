@@ -1,39 +1,97 @@
 <div class="w-full">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-4xl font-bold text-white">Questionários</h1>
-    
+  <%# Banner superior %>
+  <div class="bg-[#1F2937] rounded-lg p-8 mb-8 text-center">
+    <h1 class="text-4xl font-bold text-white mb-4">Bem-vindo ao Code Quiz</h1>
+    <p class="text-slate-400 text-lg mb-6">Teste seus conhecimentos em programação com nossos quizzes interativos</p>
     <% if policy(Questionnaire).new? %>
-      <%= link_to "Novo Questionário", new_questionnaire_path, class: "bg-[#4f46e5] hover:bg-[#4338ca] text-white font-bold py-2 px-4 rounded-lg transition-colors" %>
+      <%= link_to new_questionnaire_path, class: "inline-flex items-center bg-[#4f46e5] hover:bg-[#4338ca] text-white font-bold py-3 px-6 rounded-lg transition-colors text-lg" do %>
+        <i class="fas fa-plus mr-2"></i> Criar Novo Questionário
+      <% end %>
     <% end %>
   </div>
 
-  <div id="questionnaires" class="space-y-4">
+  <%# Grid de Questionários %>
+  <div id="questionnaires" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <% @questionnaires.each do |questionnaire| %>
-      <div class="bg-[#1F2937] shadow-lg rounded-lg p-4 flex justify-between items-center transition-transform hover:scale-[1.01]">
-        <div>
-          <h2 class="font-bold text-lg text-white hover:text-[#a5b4fc]">
-            <%= link_to questionnaire.title, questionnaire %>
-          </h2>
-          <p class="text-sm text-slate-400">Criado por: <%= questionnaire.user.email %></p>
-        </div>
-        <div class="flex space-x-2">
-          
+      <div class="bg-[#1F2937] shadow-lg rounded-lg overflow-hidden">
+        <div class="p-6">
+          <%# Título e Descrição %>
+          <div class="mb-4">
+            <h3 class="text-xl font-bold text-white mb-2">
+              <%= questionnaire.title %>
+            </h3>
+            <p class="text-slate-400 text-sm">
+              <%= truncate(questionnaire.description, length: 120) %>
+            </p>
+          </div>
 
+          <%# Informações do Quiz %>
+          <div class="flex items-center space-x-4 mb-6 text-sm text-slate-400">
+            <div class="flex items-center">
+              <i class="fas fa-question-circle mr-2"></i>
+              <span><%= questionnaire.questions.count %> perguntas</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-clock mr-2"></i>
+              <span><%= questionnaire.duration_minutes %> min</span>
+            </div>
+          </div>
 
-          <% if questionnaire.questions.any? %>
-            <%= link_to "Iniciar Quiz", 
-                        questionnaire_quiz_question_path(questionnaire, questionnaire.questions.order(:created_at).first), 
-                        class: "bg-[#4f46e5] hover:bg-[#4338ca] text-white font-bold py-2 px-3 rounded text-sm transition-colors" %>
-          <% end %>
+          <%# Barra de Ações %>
+          <div class="flex items-center justify-between mt-4">
+            <% if questionnaire.questions.any? %>
+              <%= link_to questionnaire_quiz_question_path(questionnaire, questionnaire.questions.order(:created_at).first),
+                  class: "bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg
+                         flex items-center justify-center" do %>
+                <i class="fas fa-play mr-2"></i>
+                <span>Iniciar Quiz</span>
+              <% end %>
+            <% end %>
 
-          <% if policy(questionnaire).edit? %> 
-            <%= link_to "Gerenciar", questionnaire, class: "bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-3 rounded text-sm transition-colors" %>
-            <%= link_to "Editar", edit_questionnaire_path(questionnaire), class: "bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-3 rounded text-sm transition-colors" %>
-            <%= button_to "Destruir", questionnaire, method: :delete, class: "bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-3 rounded text-sm transition-colors", form: { data: { turbo_confirm: 'Você tem certeza?' } } %>
-          <% end %>
-          
+            <%# Botões de Ação (apenas para autorizados) %>
+            <% if policy(questionnaire).edit? %>
+              <div class="flex items-center gap-2">
+                <%= link_to questionnaire,
+                    class: "px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white",
+                    title: "Gerenciar Quiz" do %>
+                  <i class="fas fa-cog"></i>
+                <% end %>
+
+                <%= link_to edit_questionnaire_path(questionnaire),
+                    class: "px-3 py-2 rounded-lg bg-orange-900/30 hover:bg-orange-800/50 text-orange-400 hover:text-orange-300",
+                    title: "Editar Quiz" do %>
+                  <i class="fas fa-edit"></i>
+                <% end %>
+
+                <%= button_to questionnaire,
+                    method: :delete,
+                    class: "px-3 py-2 rounded-lg bg-red-900/30 hover:bg-red-800/50 text-red-400 hover:text-red-300",
+                    title: "Excluir Quiz",
+                    data: { turbo_confirm: "Tem certeza que deseja excluir este questionário?" } do %>
+                  <i class="fas fa-trash"></i>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
         </div>
       </div>
     <% end %>
   </div>
+
+  <%# Mensagem quando não há questionários %>
+  <% if @questionnaires.empty? %>
+    <div class="text-center py-12">
+      <div class="mb-4">
+        <i class="fas fa-clipboard-list text-6xl text-slate-600"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-white mb-2">Nenhum questionário disponível</h3>
+      <p class="text-slate-400">
+        <% if policy(Questionnaire).new? %>
+          Seja o primeiro a criar um questionário!
+        <% else %>
+          Em breve novos questionários estarão disponíveis.
+        <% end %>
+      </p>
+    </div>
+  <% end %>
 </div>

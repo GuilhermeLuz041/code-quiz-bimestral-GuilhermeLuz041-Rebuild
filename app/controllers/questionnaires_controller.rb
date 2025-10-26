@@ -3,7 +3,7 @@ class QuestionnairesController < ApplicationController
   before_action :set_questionnaire, only: %i[ show edit update destroy ]
 
   def index
-    @questionnaires = policy_scope(Questionnaire)
+    @questionnaires = policy_scope(Questionnaire).active
   end
 
   def show
@@ -48,7 +48,7 @@ class QuestionnairesController < ApplicationController
 
   private
     def set_questionnaire
-      @questionnaire = Questionnaire.find(params[:id])
+      @questionnaire = Questionnaire.where(deleted_at: nil).find(params[:id])
     end
 
     def questionnaire_params

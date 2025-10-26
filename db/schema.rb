@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_18_215521) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_26_175036) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -31,6 +31,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_215521) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
     t.index ["user_id"], name: "index_questionnaires_on_user_id"
   end
 
@@ -52,15 +53,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_215521) do
     t.bigint "user_id", null: false
     t.bigint "questionnaire_id", null: false
     t.bigint "question_id", null: false
-    t.bigint "selected_option_id", null: false
+    t.bigint "question_option_id", null: false
     t.boolean "is_correct"
     t.datetime "answered_at", precision: nil
     t.text "question_snapshot"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["question_id"], name: "index_user_answer_histories_on_question_id"
+    t.index ["question_option_id"], name: "index_user_answer_histories_on_question_option_id"
     t.index ["questionnaire_id"], name: "index_user_answer_histories_on_questionnaire_id"
-    t.index ["selected_option_id"], name: "index_user_answer_histories_on_selected_option_id"
     t.index ["user_id"], name: "index_user_answer_histories_on_user_id"
   end
 
@@ -103,7 +104,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_215521) do
   add_foreign_key "question_options", "questions"
   add_foreign_key "questionnaires", "users"
   add_foreign_key "questions", "questionnaires"
-  add_foreign_key "user_answer_histories", "question_options", column: "selected_option_id"
+  add_foreign_key "user_answer_histories", "question_options"
   add_foreign_key "user_answer_histories", "questionnaires"
   add_foreign_key "user_answer_histories", "questions"
   add_foreign_key "user_answer_histories", "users"

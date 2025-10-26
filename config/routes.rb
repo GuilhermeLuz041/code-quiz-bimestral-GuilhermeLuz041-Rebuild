@@ -1,6 +1,14 @@
 Rails.application.routes.draw do
   devise_for :users
 
+  get 'profile', to: 'profile#show', as: :user_profile
+  resources :users, only: [:index] do
+    member do
+      patch 'promote'
+      patch 'demote'
+    end
+  end
+  
   root "questionnaires#index"
 
 

@@ -1,21 +1,79 @@
-<div class="max-w-2xl mx-auto bg-[#1F2937] shadow-lg rounded-lg p-8 text-center">
-  <h1 class="text-3xl font-bold text-white mb-4">Resultado do Quiz</h1>
-  <h2 class="text-xl text-slate-400 mb-8"><%= @user_result.questionnaire.title %></h2>
-
-  <div class="mb-8">
-    <p class="text-lg text-slate-300">Você acertou</p>
-    <p class="text-6xl font-bold text-white">
-      <%= @user_result.correct_answers %> de <%= @user_result.total_questions %>
-    </p>
-    <p class="text-lg text-slate-300">perguntas</p>
+<div class="max-w-2xl mx-auto bg-[#1F2937] shadow-lg rounded-lg overflow-hidden">
+  <%# Cabeçalho %>
+  <div class="bg-[#4f46e5] p-8 text-center">
+    <h1 class="text-3xl font-bold text-white mb-2">Quiz Completado!</h1>
+    <h2 class="text-xl text-indigo-200"><%= @user_result.questionnaire.title %></h2>
   </div>
 
-  <div class="bg-[#4f46e5] text-white rounded-lg p-4 mb-8">
-    <p class="text-lg">Sua pontuação final foi de</p>
-    <p class="text-4xl font-bold"><%= number_to_percentage(@user_result.score, precision: 0) %></p>
-  </div>
+  <%# Corpo do Resultado %>
+  <div class="p-8">
+    <%# Círculo de Pontuação %>
+    <div class="relative w-48 h-48 mx-auto mb-8">
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center">
+          <p class="text-6xl font-bold text-white mb-1">
+            <%= number_to_percentage(@user_result.score, precision: 0) %>
+          </p>
+          <p class="text-sm text-slate-400">Pontuação Final</p>
+        </div>
+      </div>
+      <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+        <path d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+          fill="none"
+          stroke="#374151"
+          stroke-width="2"
+        />
+        <path d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+          fill="none"
+          stroke="#4f46e5"
+          stroke-width="2"
+          stroke-dasharray="<%= @user_result.score %>, 100"
+        />
+      </svg>
+    </div>
 
-  <div class="mt-8">
-    <%= link_to "Ver outros Questionários", questionnaires_path, class: "text-slate-400 hover:text-white" %>
+    <%# Detalhes do Resultado %>
+    <div class="grid grid-cols-2 gap-4 mb-8">
+      <div class="bg-[#111827] rounded-lg p-4 text-center">
+        <p class="text-4xl font-bold text-white mb-1">
+          <%= @user_result.correct_answers %>/<%= @user_result.total_questions %>
+        </p>
+        <p class="text-sm text-slate-400">Respostas Corretas</p>
+      </div>
+      <div class="bg-[#111827] rounded-lg p-4 text-center">
+        <p class="text-4xl font-bold text-white mb-1">
+          <%= @user_result.total_questions - @user_result.correct_answers %>
+        </p>
+        <p class="text-sm text-slate-400">Erros</p>
+      </div>
+    </div>
+
+    <%# Mensagem de Feedback %>
+    <div class="text-center mb-8">
+      <% if @user_result.score >= 90 %>
+        <p class="text-lg text-emerald-400">Excelente! Você domina esse assunto! 🏆</p>
+      <% elsif @user_result.score >= 70 %>
+        <p class="text-lg text-blue-400">Muito bom! Continue praticando! 🎯</p>
+      <% elsif @user_result.score >= 50 %>
+        <p class="text-lg text-yellow-400">Bom trabalho! Há espaço para melhorar. 💪</p>
+      <% else %>
+        <p class="text-lg text-orange-400">Continue estudando! A prática leva à perfeição. 📚</p>
+      <% end %>
+    </div>
+
+    <%# Botões de Ação %>
+    <div class="flex justify-center space-x-4">
+      <%= link_to questionnaires_path, class: "bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center" do %>
+        <i class="fas fa-list-ul mr-2"></i> Ver Todos os Quizzes
+      <% end %>
+      
+      <%= link_to user_profile_path, class: "bg-[#4f46e5] hover:bg-[#4338ca] text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center" do %>
+        <i class="fas fa-trophy mr-2"></i> Ver Meu Progresso
+      <% end %>
+    </div>
   </div>
 </div>

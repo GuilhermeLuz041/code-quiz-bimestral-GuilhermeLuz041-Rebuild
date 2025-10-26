@@ -2,5 +2,5 @@ class UserAnswerHistory < ApplicationRecord
   belongs_to :user
   belongs_to :questionnaire
   belongs_to :question
-  belongs_to :selected_option, class_name: 'QuestionOption'
+  belongs_to :question_option
 end
