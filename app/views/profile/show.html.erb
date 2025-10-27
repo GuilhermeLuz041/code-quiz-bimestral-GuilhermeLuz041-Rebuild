@@ -46,7 +46,7 @@
                 <%= result.questionnaire.title %>
               </h3>
               <p class="text-sm text-slate-400">
-                Realizado em: <%= l(result.submitted_at, format: :long) %>
+                Realizado em: <%= result.submitted_at ? l(result.submitted_at, format: :long) : "Data não disponível" %>
               </p>
             </div>
             <div class="text-right">

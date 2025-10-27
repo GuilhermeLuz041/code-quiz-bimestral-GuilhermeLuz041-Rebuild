@@ -66,7 +66,7 @@ class QuizAttemptsController < ApplicationController
     total_questions = @questionnaire.questions.count
     score = calculate_score(correct_answers, total_questions)
 
-    UserResult.create!(
+    result = UserResult.create!(
       user: current_user,
       questionnaire: @questionnaire,
       correct_answers: correct_answers,
@@ -74,6 +74,7 @@ class QuizAttemptsController < ApplicationController
       score: score,
       submitted_at: Time.current
     )
+
   end
 
   def calculate_score(correct_answers, total_questions)
